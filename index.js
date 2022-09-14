@@ -31,6 +31,20 @@ if(!decoded.includes(separator)) {
     await driver.findElement(By.name('login[username]')).sendKeys(username);
     await driver.findElement(By.name('login[password]')).sendKeys(password, Key.RETURN);
     await driver.sleep(5000);
+    await driver.findElement(By.id('search-input')).sendKeys('leche entera asturiana', Key.RETURN);
+    await driver.sleep(5000);
+    const items = await driver.findElements(By.className('product-list-item'));
+    const result = [];
+    for(let i = 0; i < items.length; i++) {
+      const item = items[i];
+      const img = await item.findElement(By.className('image--wrapper')).getAttribute('src');
+      const name = await item.findElement(By.className('description__text name')).getText();
+      const price = await item.findElement(By.className('price__text')).getText();
+      
+      result.push({ img, name, price });
+    }
+
+    console.log(JSON.stringify(result, null, 2));
   } finally {
     driver.quit();
   }
